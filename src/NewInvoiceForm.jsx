@@ -15,7 +15,7 @@ const NewInvoiceForm = ({ onCancel, onSuccess, initialData }) => {
   // Form State
   const [customer, setCustomer] = useState({ name: '', address: '', idLabel: 'GSTIN', idValue: '' });
   const [meta, setMeta] = useState({ 
-    invoiceNo: `INV-${Math.floor(Math.random() * 10000)}`, 
+    invoiceNo: 'Loading...', 
     date: new Date().toISOString().split('T')[0], 
     vehicleNo: '', 
     ewbNo: '' 
@@ -25,11 +25,10 @@ const NewInvoiceForm = ({ onCancel, onSuccess, initialData }) => {
   ]);
 
   // Pre-fill form if editing, and fetch autocomplete data
-  useEffect(() => {
+useEffect(() => {
     if (isEditMode && initialData) {
       setCustomer(initialData.customer);
       setMeta(initialData.meta);
-      // Map the items to remove the database 'id' so we can cleanly re-insert them later
       setItems(initialData.items.map(item => ({
         description: item.description,
         hsn: item.hsn,
@@ -40,18 +39,69 @@ const NewInvoiceForm = ({ onCancel, onSuccess, initialData }) => {
       })));
     }
 
-    async function fetchAutocompleteData() {
-      // Fetch customers
+    // --- NEW: Function to generate the next Invoice Number ---
+    async function fetchNextInvoiceNumber() {
+      // 1. Calculate current Financial Year (e.g., "25-26" or "26-27")
+      const today = new Date();
+      const month = today.getMonth() + 1; // getMonth is 0-indexed
+      const year = today.getFullYear();
+      
+      // If month is Jan, Feb, or Mar (<= 3), FY started last year. Otherwise, it starts this year.
+      const startYear = month > 3 ? year : year - 1;
+      const fyString = `${startYear.toString().slice(-2)}-${(startYear + 1).toString().slice(-2)}`;
+      
+      const prefix = `ARM/${fyString}/`;
+
+      try {
+        // 2. Fetch the most recent invoice from the database
+        const { data, error } = await supabase
+          .from('invoices')
+          .select('invoice_no')
+          .order('id', { ascending: false }) // Get the absolute latest entry
+          .limit(1)
+          .maybeSingle();
+
+        // 3. Extract, verify, and increment the sequence
+        if (data && data.invoice_no) {
+          const parts = data.invoice_no.split('/');
+          
+          // Check if it matches the current FY format (e.g., it hasn't rolled over to April 1st yet)
+          if (parts.length === 3 && parts[1] === fyString) {
+            const lastNumber = parseInt(parts[2], 10);
+            
+            if (!isNaN(lastNumber)) {
+              // Add 1, and pad it with leading zeros (e.g., 10 -> "011")
+              const nextNumber = String(lastNumber + 1).padStart(3, '0');
+              return `${prefix}${nextNumber}`;
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching auto-increment ID:", err);
+      }
+
+      // 4. Fallback: If DB is empty, or a new Financial Year just started, reset to 001
+      return `${prefix}001`;
+    }
+
+    // Fetch all required data on mount
+    async function fetchFormData() {
+      // Fetch customers and vehicles
       const { data: customers } = await supabase.from('customers').select('*');
       if (customers) setKnownCustomers(customers);
 
-      // Fetch vehicles from the new table
       const { data: vehicles } = await supabase.from('vehicles').select('*');
-      if (vehicles) setKnownVehicles(vehicles); // Store the whole object array now
-    }
-    fetchAutocompleteData();
-  }, [initialData, isEditMode]);
+      if (vehicles) setKnownVehicles(vehicles);
 
+      // If we are creating a NEW invoice, fetch the auto-incremented number
+      if (!isEditMode) {
+        const nextInvoiceNo = await fetchNextInvoiceNumber();
+        setMeta(prevMeta => ({ ...prevMeta, invoiceNo: nextInvoiceNo }));
+      }
+    }
+    
+    fetchFormData();
+  }, [initialData, isEditMode]);
   const handleCustomerNameChange = (e) => {
     const typedName = e.target.value;
     const matchedCustomer = knownCustomers.find(c => c.name === typedName);
