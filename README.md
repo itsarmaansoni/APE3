@@ -54,7 +54,7 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_api_key
 ```
 
 ### 4. Database Setup
-Execute the SQL migration scripts provided in the Supabase SQL Editor to generate the required tables:
+Execute the SQL migration scripts provided in the database folder to generate the required tables:
 * `customers`
 * `vehicles`
 * `invoices`
