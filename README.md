@@ -43,3 +43,40 @@ cd ape3
 
 # Install dependencies
 npm install
+```
+
+### 3. Environment Variables
+Create a `.env.local` file in the root of your project and add your Supabase credentials:
+
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_api_key
+```
+
+### 4. Database Setup
+Execute the SQL migration scripts provided in the Supabase SQL Editor to generate the required tables:
+* `customers`
+* `vehicles`
+* `invoices`
+* `invoice_items`
+
+*Ensure Row Level Security (RLS) is enabled and policies are configured for authenticated users.*
+
+### 5. Run the Application
+```bash
+npm run dev
+```
+Open http://localhost:5173 to view it in the browser.
+
+---
+
+## 🗄️ Database Schema Overview
+
+The application utilizes a highly normalized PostgreSQL structure:
+* **Customers:** Stores unique business entities to prevent redundant address typing.
+* **Vehicles:** A dedicated lookup table for transport trucks.
+* **Invoices:** The core metadata table containing dates, totals, and foreign keys mapping to the customer and vehicle.
+* **Invoice Items:** The line-item ledger linked to specific invoices via cascading foreign keys.
+
+---
+*Built for speed, accuracy, and professional financial management.*
