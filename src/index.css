@@ -1,0 +1,18 @@
+/* A clean slate for your application */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  /* You set the background in App.jsx to #f1f5f9, so we can set it here globally too */
+  background-color: #f1f5f9; 
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* --- Global Print Overrides --- */
+@media print {
+  /* Hide the top navigation bar when printing */
+  .app-navbar {
+    display: none !important;
+  }
+}

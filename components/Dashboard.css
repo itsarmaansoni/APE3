@@ -1,0 +1,193 @@
+.dashboard-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  color: #1e293b;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.dashboard-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.btn-primary {
+  background-color: #0f172a;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #1e293b;
+}
+
+.table-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.dashboard-table th, 
+.dashboard-table td {
+  padding: 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.dashboard-table th {
+  background-color: #f8fafc;
+  font-weight: 600;
+  font-size: 13px;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dashboard-table td {
+  font-size: 14px;
+  color: #334155;
+  vertical-align: middle;
+}
+
+.dashboard-table tbody tr:hover {
+  background-color: #f1f5f9;
+}
+
+.font-bold {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+  font-style: italic;
+}
+
+/* Badges for E-Way Bill Status */
+.badge {
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.badge-success { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+.badge-danger { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+.badge-gray { background-color: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+
+/* Action Button */
+.btn-view {
+  background-color: white;
+  color: #0f172a;
+  border: 1px solid #cbd5e0;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-view:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.dashboard-msg {
+  text-align: center;
+  margin-top: 50px;
+  font-size: 16px;
+  color: #475569;
+}
+.dashboard-msg.error { color: #dc2626; }
+
+
+/* Container to keep buttons side-by-side */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+/* New Delete Button Styles */
+.btn-delete {
+  background-color: white;
+  color: #dc2626; /* Red text */
+  border: 1px solid #fca5a5; /* Light red border */
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-delete:hover {
+  background-color: #fef2f2; /* Very light red background on hover */
+  border-color: #ef4444;
+}
+
+.form-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #cbd5e0;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #0f172a;
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.1);
+}
+
+.form-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.btn-edit {
+  background-color: white;
+  color: #0284c7; /* Blue text */
+  border: 1px solid #7dd3fc; /* Light blue border */
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-edit:hover {
+  background-color: #f0f9ff;
+  border-color: #38bdf8;
+}
