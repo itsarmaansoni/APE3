@@ -1,16 +1,45 @@
-# React + Vite
+# APE3 🚀
+> **Arman Enterprises - Billing System 3**
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, full-stack billing and invoicing application designed specifically for Arman Enterprises. Built to streamline the creation, management, and printing of GST-compliant A4 invoices with zero hassle.
 
-Currently, two official plugins are available:
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)
+![Supabase](https://img.shields.io/badge/Supabase-181818?style=for-the-badge&logo=supabase&logoColor=3ECF8E)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## ✨ Key Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* **Secure Authentication:** Locked-down access using Supabase Auth. Only authorized personnel can view or generate financial records.
+* **Smart Dashboard:** A central command center to view all historical invoices, track grand totals, and instantly identify high-value shipments missing an E-Way Bill.
+* **Intelligent Auto-Incrementing:** Automatically generates the next invoice number based on the current Financial Year (e.g., `ARM/25-26/011`), gracefully resetting every April 1st.
+* **Dynamic Data Entry:** * Live calculation of Taxable Value, CGST (9%), SGST (9%), and Grand Totals.
+    * Smart autocomplete for returning customers (auto-fills GSTIN/Aadhaar and Addresses).
+    * Smart autocomplete for frequently used Vehicle Numbers.
+* **Full CRUD Capabilities:** Seamlessly Create, Read, Update, and Delete invoices. Updating an invoice automatically syncs all nested line items.
+* **Print-Perfect A4 Invoices:** Custom `@media print` CSS ensures that clicking "Print" generates a flawless, professional physical invoice without any UI clutter.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠️ Tech Stack
+
+* **Frontend:** React.js (via Vite)
+* **Backend & Database:** Supabase (Managed PostgreSQL)
+* **Styling:** Custom CSS (Optimized for both Web & Print)
+
+---
+
+## 🚀 Local Development Setup
+
+### 1. Prerequisites
+Ensure you have [Node.js](https://nodejs.org/) installed on your machine.
+
+### 2. Clone and Install
+```bash
+# Navigate to your project directory
+cd ape3
+
+# Install dependencies
+npm install
