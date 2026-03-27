@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { supabase } from '../src/supabaseclient'; // Adjust path if needed
+import { supabase } from '../src/supabaseClient'; // Adjust path if needed
 import './Dashboard.css'; // Reusing your existing styles
 
 const Auth = () => {
