@@ -51,7 +51,7 @@ const Invoice = ({ data }) => {
 
   return (
     <div className="invoice-wrapper">
-      <div className="app-controls">
+      <div className="app-controls" style={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
         <button className="btn-print" onClick={handlePrint}>Print A4 Invoice</button>
       </div>
 
