@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../src/supabaseclient';
+import { supabase } from './supabaseClient';
 import '../components/Dashboard.css';
 
 const NewInvoiceForm = ({ onCancel, onSuccess, initialData }) => {
