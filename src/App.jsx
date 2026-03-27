@@ -3,19 +3,40 @@ import { supabase } from '../src/supabaseclient';
 import Invoice from '../components/Invoice';
 import Dashboard from '../components/Dashboard';
 import NewInvoiceForm from '../src/NewInvoiceForm';
+import Auth from '../components/Auth'; // <-- Import the Auth component
 
 function App() {
-  const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard', 'invoice', 'new', 'edit'
+  // --- NEW: Auth State ---
+  const [session, setSession] = useState(null);
+  
+  // --- Existing App State ---
+  const [currentView, setCurrentView] = useState('dashboard');
   const [selectedInvoiceNo, setSelectedInvoiceNo] = useState(null);
   const [invoiceData, setInvoiceData] = useState(null);
   const [loadingInvoice, setLoadingInvoice] = useState(false);
 
+  // --- NEW: Check Auth Status on Load ---
   useEffect(() => {
-    // Fetch data if we are trying to View OR Edit an invoice
-    if ((currentView === 'invoice' || currentView === 'edit') && selectedInvoiceNo) {
-      fetchSingleInvoice(selectedInvoiceNo);
-    }
-  }, [currentView, selectedInvoiceNo]);
+    // Check active session on initial load
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    // Listen for login/logout events
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // --- Handle Logout ---
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setCurrentView('dashboard'); // Reset view on logout
+  };
+
+  // ... (Keep all your existing fetchSingleInvoice, handleViewInvoice, handleEditInvoice, handleCreateNew, handleBackToDashboard functions exactly as they are) ...
 
   async function fetchSingleInvoice(invoiceNo) {
     setLoadingInvoice(true);
@@ -30,7 +51,7 @@ function App() {
 
       if (data) {
         const formattedData = {
-          invoiceId: data.id, // NEW: Required for Edit mode to update the database
+          invoiceId: data.id,
           company: {
             name: "ARMAN ENTERPRISES",
             address: "68, Purani Basti, Naubasta, Hamirpur Road, Kanpur, PINCODE : 208021\nState: Uttar Pradesh",
@@ -77,20 +98,25 @@ function App() {
     }
   }
 
+  useEffect(() => {
+    if ((currentView === 'invoice' || currentView === 'edit') && selectedInvoiceNo) {
+      fetchSingleInvoice(selectedInvoiceNo);
+    }
+  }, [currentView, selectedInvoiceNo]);
+
   const handleViewInvoice = (invoiceNo) => {
     setSelectedInvoiceNo(invoiceNo);
     setCurrentView('invoice');
   };
 
-  // --- NEW: Edit Handler ---
   const handleEditInvoice = (invoiceNo) => {
     setSelectedInvoiceNo(invoiceNo);
-    setInvoiceData(null); // Clear previous data so the form shows a loading state if needed
+    setInvoiceData(null);
     setCurrentView('edit');
   };
 
   const handleCreateNew = () => {
-    setInvoiceData(null); // Ensure form is blank for a new invoice
+    setInvoiceData(null);
     setCurrentView('new');
   };
 
@@ -100,26 +126,47 @@ function App() {
     setSelectedInvoiceNo(null);
   };
 
+
+  // --- NEW: The Gatekeeper Check ---
+  // If there is no active session, ONLY render the Auth screen.
+  if (!session) {
+    return <Auth />;
+  }
+
+  // If session exists, render the main application
   return (
     <div style={{ backgroundColor: '#f1f5f9', minHeight: '100vh' }}>
+      
+      {/* Navigation Bar */}
       <nav className="app-navbar" style={{ background: '#1e293b', padding: '15px 20px', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1 style={{ margin: 0, fontSize: '18px' }}>Arman Enterprises - Billing System</h1>
-        {currentView !== 'dashboard' && (
-          <button onClick={handleBackToDashboard} style={{ background: 'transparent', border: '1px solid white', color: 'white', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer' }}>
-            &larr; Back to Dashboard
+        
+        <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+          {currentView !== 'dashboard' && (
+            <button onClick={handleBackToDashboard} style={{ background: 'transparent', border: '1px solid white', color: 'white', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer' }}>
+              &larr; Back to Dashboard
+            </button>
+          )}
+          
+          {/* Sign Out Button */}
+          <button 
+            onClick={handleLogout} 
+            style={{ background: '#dc2626', border: 'none', color: 'white', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }}
+          >
+            Sign Out
           </button>
-        )}
+        </div>
       </nav>
 
+      {/* Main Content Area */}
       {currentView === 'dashboard' && (
         <Dashboard 
           onViewInvoice={handleViewInvoice} 
           onCreateNew={handleCreateNew} 
-          onEditInvoice={handleEditInvoice} // Pass the edit function down
+          onEditInvoice={handleEditInvoice}
         />
       )}
 
-      {/* Render form for BOTH 'new' and 'edit' views */}
       {(currentView === 'new' || currentView === 'edit') && (
         (currentView === 'edit' && loadingInvoice) ? (
           <div style={{ textAlign: 'center', padding: '50px' }}>Loading Invoice Data...</div>
