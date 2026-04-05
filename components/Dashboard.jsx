@@ -24,7 +24,7 @@ const Dashboard = ({ onViewInvoice, onCreateNew , onEditInvoice }) => {
           ewb_no,
           customer:customers(name)
         `)
-        .order('date', { ascending: false });
+        .order('id', { ascending: false });
 
       if (error) throw error;
       setInvoices(data || []);
