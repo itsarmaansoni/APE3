@@ -37,10 +37,24 @@ const Dashboard = ({ onViewInvoice, onCreateNew , onEditInvoice }) => {
   }
 
   // --- DELETE FUNCTION ---
-  async function handleDelete(id, invoiceNo) {
-    const isConfirmed = window.confirm(`Are you sure you want to delete ${invoiceNo}? This cannot be undone.`);
-    if (!isConfirmed) return;
+async function handleDelete(id, invoiceNo) {
+    // 1. Force the user to type the exact invoice number
+    const userInput = window.prompt(
+      `⚠️ WARNING: You are about to permanently delete this invoice.\n\nTo confirm, please type the exact invoice number: ${invoiceNo}`
+    );
 
+    // 2. If they click Cancel, userInput will be null. Just exit safely.
+    if (userInput === null) {
+      return; 
+    }
+
+    // 3. If they typed it wrong, block the deletion.
+    if (userInput !== invoiceNo) {
+      alert("❌ The invoice number did not match. Deletion cancelled.");
+      return;
+    }
+
+    // 4. If it matches perfectly, proceed with the hard delete
     try {
       const { error } = await supabase
         .from('invoices')
@@ -49,6 +63,7 @@ const Dashboard = ({ onViewInvoice, onCreateNew , onEditInvoice }) => {
 
       if (error) throw error;
 
+      // Instantly remove it from the React UI
       setInvoices(prevInvoices => prevInvoices.filter(inv => inv.id !== id));
       
     } catch (err) {
