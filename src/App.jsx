@@ -69,24 +69,33 @@ function App() {
             vehicleNo: data.vehicle ? data.vehicle.vehicle_no : '',
             ewbNo: data.ewb_no
           },
-          items: data.items.map(item => ({
-            id: item.id,
-            description: item.description,
-            hsn: item.hsn,
-            qty: Number(item.quantity),
-            rate: Number(item.rate),
-            taxableVal: Number(item.quantity) * Number(item.rate),
-            cgstRate: Number(item.cgst_percent),
-            cgstAmt: (Number(item.quantity) * Number(item.rate)) * (Number(item.cgst_percent) / 100),
-            sgstRate: Number(item.sgst_percent),
-            sgstAmt: (Number(item.quantity) * Number(item.rate)) * (Number(item.sgst_percent) / 100),
-            total: (Number(item.quantity) * Number(item.rate)) * (1 + (Number(item.cgst_percent) + Number(item.sgst_percent)) / 100)
-          })),
+          items: data.items.map(item => {
+            // Calculate rounded amounts per row
+            const itemTaxable = Math.round(Number(item.quantity) * Number(item.rate));
+            const cgstAmt = Math.round(itemTaxable * (Number(item.cgst_percent) / 100));
+            const sgstAmt = Math.round(itemTaxable * (Number(item.sgst_percent) / 100));
+            const total = itemTaxable + cgstAmt + sgstAmt;
+
+            return {
+              id: item.id,
+              description: item.description,
+              hsn: item.hsn,
+              qty: Number(item.quantity),
+              rate: Number(item.rate),
+              taxableVal: itemTaxable,
+              cgstRate: Number(item.cgst_percent),
+              cgstAmt: cgstAmt,
+              sgstRate: Number(item.sgst_percent),
+              sgstAmt: sgstAmt,
+              total: total
+            };
+          }),
           totals: {
-            taxableValue: Number(data.total_taxable_value),
-            cgst: Number(data.total_cgst),
-            sgst: Number(data.total_sgst),
-            grandTotal: Number(data.grand_total)
+            // Wrapping all historical database values in Math.round()
+            taxableValue: Math.round(Number(data.total_taxable_value)),
+            cgst: Math.round(Number(data.total_cgst)),
+            sgst: Math.round(Number(data.total_sgst)),
+            grandTotal: Math.round(Number(data.grand_total))
           }
         };
         setInvoiceData(formattedData);

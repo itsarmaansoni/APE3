@@ -117,17 +117,33 @@ useEffect(() => {
     }
   };
 
-  const calculateTotals = () => {
-    let taxableValue = 0, cgst = 0, sgst = 0;
-    items.forEach(item => {
-      const itemTaxable = Number(item.qty) * Number(item.rate);
-      taxableValue += itemTaxable;
-      cgst += itemTaxable * (Number(item.cgstPercent) / 100);
-      sgst += itemTaxable * (Number(item.sgstPercent) / 100);
-    });
-    return { taxableValue, cgst, sgst, grandTotal: taxableValue + cgst + sgst };
-  };
+const calculateTotals = () => {
+    let taxableValue = 0;
+    let cgst = 0;
+    let sgst = 0;
 
+    items.forEach(item => {
+      // 1. Calculate and round the base item taxable value
+      const itemTaxable = Math.round(Number(item.qty) * Number(item.rate));
+      
+      // 2. Calculate and round the individual taxes
+      const itemCgst = Math.round(itemTaxable * (Number(item.cgstPercent) / 100));
+      const itemSgst = Math.round(itemTaxable * (Number(item.sgstPercent) / 100));
+
+      // 3. Add the rounded values to the running totals
+      taxableValue += itemTaxable;
+      cgst += itemCgst;
+      sgst += itemSgst;
+    });
+
+    // The grand total is now perfectly clean because it's a sum of rounded integers
+    return { 
+      taxableValue, 
+      cgst, 
+      sgst, 
+      grandTotal: taxableValue + cgst + sgst 
+    };
+  };
   const totals = calculateTotals();
 
   const handleItemChange = (index, field, value) => {
