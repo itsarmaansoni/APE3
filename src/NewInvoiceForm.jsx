@@ -263,7 +263,17 @@ const handleSubmit = async (e) => {
             {/* Disabled Invoice No if editing so they don't break the database uniqueness */}
             <div><label className="form-label">Invoice No.</label><input required className="form-input" disabled={isEditMode} value={meta.invoiceNo} onChange={e => setMeta({...meta, invoiceNo: e.target.value})} /></div>
             <div><label className="form-label">Date</label><input type="date" required className="form-input" value={meta.date} onChange={e => setMeta({...meta, date: e.target.value})} /></div>
-            <div><label className="form-label">Vehicle No.</label><input list="vehicle-numbers" className="form-input" value={meta.vehicleNo} onChange={e => setMeta({...meta, vehicleNo: e.target.value})} autoComplete="off"/></div>
+            <div>
+              <label className="form-label">Vehicle No.</label>
+              <input 
+                required 
+                list="vehicle-numbers"
+                className="form-input" 
+                value={meta.vehicleNo} 
+                onChange={e => setMeta({...meta, vehicleNo: e.target.value})} 
+                autoComplete="off"
+              />
+            </div>
             <div><label className="form-label">E-Way Bill</label><input className="form-input" value={meta.ewbNo || ''} onChange={e => setMeta({...meta, ewbNo: e.target.value})} /></div>
           </div>
         </div>
